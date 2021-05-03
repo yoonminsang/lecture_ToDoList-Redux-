@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <h1>0</h1>
+    <button class="increase">increase</button>
+    <button class="decrease">decrease</button>
+    <script src="https://unpkg.com/redux@4.1.0/dist/redux.js"></script>
+    <script>
+      const initialState = 0;
+      function reducer(state = initialState, action) {
+        switch (action.type) {
+          case 'increase':
+            return state + 1;
+          case 'decrease':
+            return state - 1;
+        }
+      }
+      const store = Redux.createStore(reducer);
+      store.subscribe(
+        () => (document.querySelector('h1').textContent = store.getState())
+      );
+      document
+        .querySelector('.increase')
+        .addEventListener('click', () => store.dispatch({ type: 'increase' }));
+      document
+        .querySelector('.decrease')
+        .addEventListener('click', () => store.dispatch({ type: 'decrease' }));
+    </script>
+  </body>
+</html>

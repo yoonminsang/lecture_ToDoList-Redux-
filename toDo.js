@@ -23,7 +23,18 @@
     return dateArr.join(' ') + '  ' + time;
   };
 
-  const addToDo = () => {};
+  const addToDo = (toDos) => {
+    const newToDo = {
+      id: Date.now(),
+      toDo: toDoInput.value,
+      date: getTime(),
+      done: false,
+      check: false,
+    };
+    toDoInput.value = '';
+    return [...toDos, newToDo];
+  };
+
   const deleteToDo = () => {};
   const deleteMultiToDo = () => {};
   const doneToDo = () => {};
@@ -113,7 +124,8 @@
   function reducer(state = initialState, action) {
     switch (action.type) {
       case ADDTODO:
-        return;
+        action.event.preventDefault();
+        return { ...state, toDos: addToDo(state.toDos) };
       case DELETETODO:
         return;
       case DELETEMULTITODO:
@@ -125,14 +137,19 @@
     }
   }
 
-  const store = Redux.createStore(reducer);
+  const store = Redux.createStore(
+    reducer,
+    window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
+  );
 
   const getToDoList = () => {};
 
-  store.subscribe();
+  store.subscribe(getToDoList);
 
   const init = () => {
-    form.addEventListener('submit', () => store.dispatch({ type: ADDTODO }));
+    form.addEventListener('submit', (event) =>
+      store.dispatch({ type: ADDTODO, event })
+    );
     toDoMultiDelete.addEventListener('click', () =>
       store.dispatch({ type: DELETEMULTITODO })
     );

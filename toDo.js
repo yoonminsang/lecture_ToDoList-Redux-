@@ -142,7 +142,67 @@
     window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
   );
 
-  const getToDoList = () => {};
+  const getToDoList = () => {
+    toDoList.innerHTML = '';
+    const { toDos } = store.getState();
+    toDos.forEach((v) => {
+      const div = document.createElement('div');
+      div.id = v.id;
+      div.className = 'toDo_list_item';
+      if (v.don) div.style.textDecoration = 'line-through';
+      div.addEventListener('click', () =>
+        store.dispatch({ type: DONETODO, id: v.id })
+      );
+      const checkBox = document.createElement('input');
+      checkBox.type = 'checkbox';
+      checkBox.addEventListener('click', () =>
+        store.dispatch({ type: CHECKTODO, id: v.id })
+      );
+      div.append(checkBox);
+      const textDiv = document.createElement('div');
+      textDiv.className = 'text';
+      textDiv.textContent = v.toDo;
+      div.append(textDiv);
+      const dateDiv = document.createElement('div');
+      dateDiv.className = 'date';
+      dateDiv.textContent = v.date;
+      div.append(dateDiv);
+      const deleteBtn = document.createElement('input');
+      deleteBtn.className = 'delete';
+      deleteBtn.type = 'button';
+      deleteBtn.value = '❌';
+      deleteBtn.addEventListener('click', () =>
+        store.dispatch({ type: DELETETODO, id: v.id })
+      );
+      div.append(deleteBtn);
+      toDoList.append(div);
+      /*
+      const { id, toDo, date } = v;
+      const div = document.createElement('div');
+      div.id = id;
+      div.className = 'toDo_list_item';
+      const checkBox = document.createElement('input');
+      checkBox.type = 'checkbox';
+      checkBox.addEventListener('click', () => toggleToDoList(id));
+      div.append(checkBox);
+      const textDiv = document.createElement('div');
+      textDiv.className = 'text';
+      textDiv.textContent = toDo;
+      div.append(textDiv);
+      const dateDiv = document.createElement('div');
+      dateDiv.className = 'date';
+      dateDiv.textContent = date;
+      div.append(dateDiv);
+      const deleteBtn = document.createElement('input');
+      deleteBtn.className = 'delete';
+      deleteBtn.type = 'button';
+      deleteBtn.value = '❌';
+      deleteBtn.addEventListener('click', () => deleteToDoList(id));
+      div.append(deleteBtn);
+      toDoList.append(div);
+      */
+    });
+  };
 
   store.subscribe(getToDoList);
 

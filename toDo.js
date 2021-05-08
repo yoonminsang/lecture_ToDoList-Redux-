@@ -37,86 +37,12 @@
 
   const deleteToDo = () => {};
   const deleteMultiToDo = () => {};
-  const doneToDo = () => {};
-  const checkMultiToDo = () => {};
-  /*
-  let list;
-  const loadToDoList = () => {
-    list = JSON.parse(localStorage.getItem(TODOLIST)) || [];
-    list.forEach((v, i) => {
-      v.id = i + 1;
-      v.check = false;
-      getToDoList(v);
-    });
+  const doneToDo = (toDos, id) => {
+    return toDos.map((v) => (v.id === id ? { ...v, done: !v.done } : v));
   };
-
-  const saveToDoList = () => {
-    const save = list.map((v) => {
-      const obj = Object.assign({}, v);
-      delete obj.id;
-      delete obj.check;
-      return obj;
-    });
-    localStorage.setItem(TODOLIST, JSON.stringify(save));
+  const checkToDo = (toDos, id) => {
+    return toDos.map((v) => (v.id === id ? { ...v, check: !v.check } : v));
   };
-
-  const toggleToDoList = (id) => {
-    const findIdx = list.findIndex((v) => v.id === id);
-    list[findIdx].check = !list[findIdx].check;
-  };
-
-  const deleteMultiToDoList = () => {
-    const filter = list.filter((v) => v.check === true);
-    filter.forEach((v) => {
-      deleteToDoList(v.id);
-    });
-  };
-
-  const deleteToDoList = (id) => {
-    document.getElementById(id).remove();
-    const findIdx = list.findIndex((v) => v.id === id);
-    list.splice(findIdx, 1);
-    saveToDoList();
-  };
-
-  const addToDoList = (e) => {
-    e.preventDefault();
-    const id = list[list.length - 1] ? list[list.length - 1].id + 1 : 1;
-    const toDo = toDoInput.value;
-    const date = getTime();
-    const check = false;
-    list.push({ id, toDo, date, check });
-    getToDoList(list[list.length - 1]);
-    saveToDoList();
-    toDoInput.value = '';
-  };
-
-  const getToDoList = (v) => {
-    const { id, toDo, date } = v;
-    const div = document.createElement('div');
-    div.id = id;
-    div.className = 'toDo_list_item';
-    const checkBox = document.createElement('input');
-    checkBox.type = 'checkbox';
-    checkBox.addEventListener('click', () => toggleToDoList(id));
-    div.append(checkBox);
-    const textDiv = document.createElement('div');
-    textDiv.className = 'text';
-    textDiv.textContent = toDo;
-    div.append(textDiv);
-    const dateDiv = document.createElement('div');
-    dateDiv.className = 'date';
-    dateDiv.textContent = date;
-    div.append(dateDiv);
-    const deleteBtn = document.createElement('input');
-    deleteBtn.className = 'delete';
-    deleteBtn.type = 'button';
-    deleteBtn.value = '❌';
-    deleteBtn.addEventListener('click', () => deleteToDoList(id));
-    div.append(deleteBtn);
-    toDoList.append(div);
-  };
-  */
   const initialState = {
     toDos: [],
   };
@@ -131,9 +57,10 @@
       case DELETEMULTITODO:
         return;
       case DONETODO:
-        return;
+        if (action.event.target.nodeName === 'INPUT') return state;
+        return { ...state, toDos: doneToDo(state.toDos, action.id) };
       case CHECKTODO:
-        return;
+        return { ...state, toDos: checkToDo(state.toDos, action.id) };
     }
   }
 
@@ -149,12 +76,13 @@
       const div = document.createElement('div');
       div.id = v.id;
       div.className = 'toDo_list_item';
-      if (v.don) div.style.textDecoration = 'line-through';
-      div.addEventListener('click', () =>
-        store.dispatch({ type: DONETODO, id: v.id })
+      if (v.done) div.style.textDecoration = 'line-through';
+      div.addEventListener('click', (event) =>
+        store.dispatch({ type: DONETODO, id: v.id, event })
       );
       const checkBox = document.createElement('input');
       checkBox.type = 'checkbox';
+      checkBox.checked = v.check;
       checkBox.addEventListener('click', () =>
         store.dispatch({ type: CHECKTODO, id: v.id })
       );
@@ -176,31 +104,6 @@
       );
       div.append(deleteBtn);
       toDoList.append(div);
-      /*
-      const { id, toDo, date } = v;
-      const div = document.createElement('div');
-      div.id = id;
-      div.className = 'toDo_list_item';
-      const checkBox = document.createElement('input');
-      checkBox.type = 'checkbox';
-      checkBox.addEventListener('click', () => toggleToDoList(id));
-      div.append(checkBox);
-      const textDiv = document.createElement('div');
-      textDiv.className = 'text';
-      textDiv.textContent = toDo;
-      div.append(textDiv);
-      const dateDiv = document.createElement('div');
-      dateDiv.className = 'date';
-      dateDiv.textContent = date;
-      div.append(dateDiv);
-      const deleteBtn = document.createElement('input');
-      deleteBtn.className = 'delete';
-      deleteBtn.type = 'button';
-      deleteBtn.value = '❌';
-      deleteBtn.addEventListener('click', () => deleteToDoList(id));
-      div.append(deleteBtn);
-      toDoList.append(div);
-      */
     });
   };
 

@@ -35,8 +35,13 @@
     return [...toDos, newToDo];
   };
 
-  const deleteToDo = () => {};
-  const deleteMultiToDo = () => {};
+  const deleteToDo = (toDos, id) => {
+    return toDos.filter((v) => v.id !== id);
+  };
+  const deleteMultiToDo = (toDos) => {
+    const ids = toDos.filter((v) => v.check === true).map((v) => v.id); // [1,2,3]
+    return toDos.filter((v) => !ids.includes(v.id));
+  };
   const doneToDo = (toDos, id) => {
     return toDos.map((v) => (v.id === id ? { ...v, done: !v.done } : v));
   };
@@ -53,9 +58,9 @@
         action.event.preventDefault();
         return { ...state, toDos: addToDo(state.toDos) };
       case DELETETODO:
-        return;
+        return { ...state, toDos: deleteToDo(state.toDos, action.id) };
       case DELETEMULTITODO:
-        return;
+        return { ...state, toDos: deleteMultiToDo(state.toDos) };
       case DONETODO:
         if (action.event.target.nodeName === 'INPUT') return state;
         return { ...state, toDos: doneToDo(state.toDos, action.id) };
